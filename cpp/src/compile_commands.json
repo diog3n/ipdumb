@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build",
+  "command": "/usr/bin/c++   -std=gnu++17 -o CMakeFiles/main.dir/src/main.cpp.o -c /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/main.cpp",
+  "file": "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/main.cpp",
+  "output": "CMakeFiles/main.dir/src/main.cpp.o"
+}
+]

@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(pcap_test CXX)
+set(CMAKE_CXX_STANDARD 14)
+
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+set(PROJECT_FILES ${SRC_DIR}/main.cpp
+                  ${SRC_DIR}/network.h
+                  ${SRC_DIR}/network.cpp
+                  ${SRC_DIR}/tests.h
+                  ${SRC_DIR}/tests.cpp
+    )
+
+add_executable(main ${PROJECT_FILES})
+
+target_link_libraries(main pcap)
+target_include_directories(main PUBLIC ${SRC_DIR})

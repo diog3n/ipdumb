@@ -1,0 +1,3 @@
+/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles/main.dir
+/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles/edit_cache.dir
+/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles/rebuild_cache.dir
