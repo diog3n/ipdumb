@@ -1,13 +1,11 @@
 #include "tests.h"
 #include "network.h"
 #include <cassert>
-#include <iostream>
 #include <netinet/if_ether.h>
 #include <netinet/ether.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <pcap/pcap.h>
-#include <variant>
 
 void TestIpAddress() {
     using namespace std::literals;
@@ -50,36 +48,28 @@ void TestHeaders() {
     pcap_pkthdr p_pkthdr = {{}, 66, 66};
 
     EthernetFrame eth_frame(p_pkthdr, packet);
+
+    for (int i = 0; i < 66; i++) {
+        packet[i] = 0;
+    }
+
     assert(ntohs(eth_frame.GetRawHeader().h_proto) == ETHERTYPE_IP);
 
-    IPv4Packet ipv4_pack = std::get<IPv4Packet>(eth_frame.GetPacket());
-    assert(ipv4_pack.GetSourceIP()
+    const IPv4Packet *ipv4_pack = (const IPv4Packet * ) 
+                                  (eth_frame.GetPacket());
+    assert(ipv4_pack != nullptr);
+
+    assert(ipv4_pack->GetSourceIP()
                     .GetAddressString() == "192.168.31.100");
-    assert(ipv4_pack.GetDestIP()
+    assert(ipv4_pack->GetDestIP()
                     .GetAddressString() == "34.107.243.93");
-    assert(std::holds_alternative<TCPSegment>(ipv4_pack.GetSegment()));
+    assert(ipv4_pack->GetSegment()->type == TransportProto::TCP);
 
-    TCPSegment tcp_segment = std::get<TCPSegment>(ipv4_pack.GetSegment());
-    assert(tcp_segment.GetSourcePort() == 0x8c02);
-    assert(tcp_segment.GetDestPort() == 0x01bb);
-
-    /*ethhdr *eth_header = (ethhdr * ) packet;
-
-    iphdr *ip_header = (iphdr * ) (packet + sizeof(*eth_header));
-    assert(ip_header->ihl == 0x05);
-    assert(ip_header->version  == 0x04);
-    assert(ntohs(ip_header->tot_len) == 0x0034);
-    assert(ip_header->ttl == 0x40);
-    assert(ntohl(ip_header->saddr) == 0xc0a81f64);
-    assert(ntohl(ip_header->daddr) == 0x226bf35d);
-
-    tcphdr *tcp_header = (tcphdr * ) (packet + sizeof(*eth_header) 
-                                      + (ip_header->ihl) * 4);
-
-    assert(ntohs(tcp_header->th_sport) == 0x8c02);
-    assert(ntohs(tcp_header->th_dport) == 0x01bb);
-
-    pcap_pkthdr p_pkthdr = {0, 0};*/
+    const TCPSegment *tcp_segment = (const TCPSegment * ) 
+                                    (ipv4_pack->GetSegment());
+    
+    assert(tcp_segment->GetSourcePort() == 0x8c02);
+    assert(tcp_segment->GetDestPort() == 0x01bb);
 
     TEST_STREAM << "TestHeaders OK!" << std::endl;
 }

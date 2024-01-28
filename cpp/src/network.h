@@ -1,6 +1,4 @@
 #pragma once
-#include <cstddef>
-#include <variant>
 #include <memory>
 #include <pcap/pcap.h>
 #include <string>
@@ -16,21 +14,20 @@
 #define IP_PROTOCOL_UDP  0x11
 #define IP_PROTOCOL_ICMP 0x01
 
+enum class TransportProto {NONE, TCP, UDP, ICMP};
+
+/* this can be expanded in the future to include IPv6 and other
+ * network-layer protocols */
+enum class NetworkProto {NONE, IPV4};
+
+class Packet;
+class Segment;
+
 class IPv4Packet;
 class TCPSegment;
 class UDPSegment;
-class ICMPSegment;
-
 class EthernetFrame;
-
-/* these can be later expanded to include other protocols */
-using Packet  = std::variant<std::monostate,
-                             IPv4Packet>;
-
-using Segment = std::variant<std::monostate,
-                             TCPSegment, 
-                             UDPSegment, 
-                             ICMPSegment>;
+class ICMPSegment;
 
 struct IpAddress;
 
@@ -44,7 +41,56 @@ struct IpAddress {
     std::string GetAddressString() const;
 };
 
-class TCPSegment {
+class Segment {
+public:
+    Segment(): type(TransportProto::NONE) {}
+
+    Segment(TransportProto proto): type(proto) {}
+
+    const TransportProto type;
+};
+
+class Packet {
+public:
+    Packet(): type(NetworkProto::NONE) {}
+
+    Packet(NetworkProto proto): type(proto) {}
+
+    const NetworkProto type;
+};
+
+class EthernetFrame {
+public:
+    EthernetFrame(const pcap_pkthdr& packet_header, const u_char *bytes);
+
+    const ethhdr& GetRawHeader() const;
+    const Packet *GetPacket() const;
+    const uint16_t GetNetworkProtocolType() const; 
+private:
+    ethhdr raw_header;
+    std::vector<u_char> frame;
+
+    std::unique_ptr<Packet> packet_ptr;
+};
+
+class IPv4Packet: public Packet {
+public:
+    IPv4Packet(u_char *packet_start);
+
+    const iphdr& GetRawHeader() const;
+    const uint8_t GetTransportProtoType() const;
+    const Segment *GetSegment() const;
+    const IpAddress& GetSourceIP() const;
+    const IpAddress& GetDestIP() const;
+private:
+    iphdr raw_header;
+    IpAddress source_ip;
+    IpAddress dest_ip;
+
+    std::unique_ptr<Segment> transport_segment_ptr;
+};
+
+class TCPSegment: public Segment {
 public:
     TCPSegment(u_char *segment_start);
 
@@ -55,9 +101,9 @@ private:
     tcphdr raw_header;
 };
 
-class UDPSegment {
+class UDPSegment: public Segment {
 public:
-    UDPSegment(u_char *segemnt_start);
+    UDPSegment(u_char *segment_start);
 
     const udphdr& GetRawHeader() const;
     const uint16_t GetSourcePort() const;
@@ -66,41 +112,13 @@ private:
     udphdr raw_header;
 };
 
-class ICMPSegment {
+class ICMPSegment: public Segment {
 public:
     ICMPSegment(u_char *segment_start);
 
     const icmphdr& GetRawHeader() const;
 private:
     icmphdr raw_header;
-};
-
-class IPv4Packet {
-public:
-    IPv4Packet(u_char *packet_start);
-
-    const iphdr& GetRawHeader() const;
-    const Segment& GetSegment() const;
-    const IpAddress& GetSourceIP() const;
-    const IpAddress& GetDestIP() const;
-private:
-    iphdr raw_header;
-    IpAddress source_ip;
-    IpAddress dest_ip;
-
-    Segment transport_segment;
-};
-
-class EthernetFrame {
-public:
-    EthernetFrame(const pcap_pkthdr& packet_header, u_char *bytes);
-
-    const ethhdr& GetRawHeader() const;
-    const Packet& GetPacket() const;
-private:
-    ethhdr raw_header;
-    Packet packet;
-    std::vector<u_char> frame;
 };
 
 void PacketHandler(u_char *args, 

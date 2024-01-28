@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include <iomanip>
 
 /* Some macros used for debugging */
 #define TEST_MESSAGE "(TEST)"
@@ -8,7 +10,8 @@
                                  << (val) \
                                  << std::endl
 
-#define PRINT_VAL_HEX(val) std::cout << std::hex \
+#define PRINT_VAL_HEX(val) std::cout << std::setfill('0') << std::setw(2) \
+                                     << std::hex \
                                      << DEBUG_MESSAGE " " #val " = " \
                                      << (val) \
                                      << std::dec \
