@@ -1,7 +1,6 @@
 #include "network.h"
 #include "tests.h"
 
-#include <ios>
 #include <linux/if_ether.h>
 #include <pcap.h>
 #include <pcap/pcap.h>
@@ -9,7 +8,6 @@
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
-#include <iostream>
 
 void print_packet_info(const u_char *packet, 
                        struct pcap_pkthdr packet_header);
@@ -17,8 +15,6 @@ void print_packet_info(const u_char *packet,
 void packet_handler(u_char *args, 
                     const struct pcap_pkthdr *pkthdr,
                     const u_char *packet);
-
-
 
 int main(int argc, char *argv[]) {
     TestIpAddress();
@@ -64,75 +60,17 @@ int main(int argc, char *argv[]) {
             error_buffer
         );
 
+    //handle = pcap_open_offline("../capture.pcap", error_buffer);
+
     if (handle == NULL) {
         printf("Error: failed to get a handle. %s\n", error_buffer);
         return 1;
     }
 
     /* We use 0 as cnt, this means unlimited or until file ends. */
-    int loop_status = pcap_dispatch(handle, 0, packet_handler, NULL); 
+    int loop_status = pcap_loop(handle, 0, PacketHandler, NULL); 
 
     pcap_close(handle);
 
     return 0;
 }
-
-void print_packet_info(const u_char *packet, 
-                       struct pcap_pkthdr packet_header) {
-    printf("Packet capture length: %d\n", packet_header.caplen);
-    printf("Packet total length %d\n", packet_header.len);
-}
-
-void packet_handler(u_char *args, 
-                    const struct pcap_pkthdr *pkthdr,
-                    const u_char *packet) {
-    ethhdr *eth_header;
-    
-    /* get the ethernet frame header */
-    eth_header = (struct ethhdr * ) packet;
-
-    std::cerr << "(DEBUG) Bytes of the packet: ";
-    for (int pos = 0; pos < 64; pos++) {
-        std::cerr << std::hex << static_cast<int>(*(packet + pos)) << " ";
-    }
-    std::cerr << std::endl;
-
-    /* if frame does not carry an IP address - ignore it */
-    if (ntohs(eth_header->h_proto) == ETHERTYPE_IP) return;
-
-
-    /* calculate the start of ip header */
-    iphdr *ip_header = (struct iphdr * ) (packet + sizeof(ethhdr));
-
-    std::cerr << "(DEBUG) iphdr version = " << (ip_header->version) << std::endl;
-    std::cerr << "(DEBUG) iphdr ihl = " << (ip_header->ihl & 0xf) << std::endl;
-
-    /* calculate the start of tcp header */
-    tcphdr *tcp_header = (struct tcphdr * ) 
-                         (packet + sizeof(ethhdr) 
-                                 + (ip_header->ihl & 0xf) * 4);
-
-    /* translate source and destination address into a readeable format */
-    const IpAddress ip_source(ntohl(ip_header->saddr));
-    const IpAddress ip_dest(ntohl(ip_header->daddr));
-
-    std::cout << "IP packet, source address is "
-              << ip_source.GetAddressString()
-              // << " (hex netlong: " << std::hex << ip_header->saddr << ")" 
-              << " and destitation address is "
-              << ip_dest.GetAddressString() 
-              // << " (hex netlong: " << std::hex << ip_header->daddr << ")"
-              << std::endl;
-
-    std::cout << "TCP header, source port is " << std::dec
-              << ntohs(tcp_header->th_sport)
-              << " and destination port is "
-              << ntohs(tcp_header->th_dport) 
-              << std::endl;
-}
-
-/*int main() {
-    std::cout << "Hello world" << std::endl;
-
-    return 0;
-}*/

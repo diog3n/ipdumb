@@ -11,3 +11,9 @@ struct IpAddress {
     IpAddress(uint32_t bin_address);
     std::string GetAddressString() const;
 };
+
+void PacketHandler(u_char *args, 
+                    const struct pcap_pkthdr *pkthdr,
+                    const u_char *packet);
+
+void PrintHEX(const u_char *payload, int len);

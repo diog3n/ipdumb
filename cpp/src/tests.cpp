@@ -6,6 +6,8 @@
 #include <netinet/ether.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
+#include <pcap/pcap.h>
+
 
 void TestIpAddress() {
     using namespace std::literals;
@@ -26,12 +28,12 @@ void TestIpAddress() {
     IpAddress ip4(0b00000000000000000000000000000000);
     assert(ip4.GetAddressString() == "0.0.0.0"s);
 
-    std::cerr << "(TEST) TestIpAddress OK!" << std::endl;
+    TEST_STREAM << "TestIpAddress OK!" << std::endl;
 }
 
 void TestHeaders() {
     using namespace std::literals;
-    
+
     /* A test packet */
     u_char packet[] = {
         0x50, 0xd2, 0xf5, 0x9a, 0xfd, 0xea, 0xbc, 0x54, 
@@ -62,7 +64,13 @@ void TestHeaders() {
     assert(ntohs(tcp_header->th_sport) == 0x8c02);
     assert(ntohs(tcp_header->th_dport) == 0x01bb);
 
-    std::cerr << "(TEST) TestHeaders OK!" << std::endl;
+    pcap_pkthdr p_pkthdr = {0, 0};
+
+    TEST_STREAM << "Calling PacketHandler..." << std::endl;
+
+    PacketHandler(NULL, &p_pkthdr, packet);
+
+    TEST_STREAM << "TestHeaders OK!" << std::endl;
 }
 
 /*
@@ -113,6 +121,9 @@ void TestHeaders() {
     f3 5d 8c 02 01 bb c0 5b da 67 ee 4f b6 0e 80 10
     00 f4 f5 fb 00 00 01 01 08 0a 1a 94 24 97 27 58
     94 8c
+
+
+
 
 */
 
