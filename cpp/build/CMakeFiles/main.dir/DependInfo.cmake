@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/main.cpp" "CMakeFiles/main.dir/src/main.cpp.o" "gcc" "CMakeFiles/main.dir/src/main.cpp.o.d"
   "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/network.cpp" "CMakeFiles/main.dir/src/network.cpp.o" "gcc" "CMakeFiles/main.dir/src/network.cpp.o.d"
+  "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/sequence.cpp" "CMakeFiles/main.dir/src/sequence.cpp.o" "gcc" "CMakeFiles/main.dir/src/sequence.cpp.o.d"
   "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/tests.cpp" "CMakeFiles/main.dir/src/tests.cpp.o" "gcc" "CMakeFiles/main.dir/src/tests.cpp.o.d"
   )
 

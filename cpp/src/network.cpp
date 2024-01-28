@@ -1,9 +1,7 @@
 #include "network.h"
-#include "tests.h"
 #include <cstdint>
 #include <memory>
 #include <sstream>
-#include <ios>
 #include <linux/if_ether.h>
 #include <pcap.h>
 #include <pcap/pcap.h>
@@ -14,11 +12,12 @@
 #include <netinet/udp.h>
 #include <iostream>
 
-IpAddress::IpAddress(uint32_t bin_address):
-    oct1{static_cast<uint8_t>((bin_address & (255 << 24)) >> 24)},
-    oct2{static_cast<uint8_t>((bin_address & (255 << 16)) >> 16)},
-    oct3{static_cast<uint8_t>((bin_address & (255 << 8 )) >> 8 )},
-    oct4{static_cast<uint8_t>( bin_address & 255)} {}
+IpAddress::IpAddress(uint32_t raw_address):
+    oct1{static_cast<uint8_t>((raw_address & (255 << 24)) >> 24)},
+    oct2{static_cast<uint8_t>((raw_address & (255 << 16)) >> 16)},
+    oct3{static_cast<uint8_t>((raw_address & (255 << 8 )) >> 8 )},
+    oct4{static_cast<uint8_t>( raw_address & 255)},
+    raw_ip(raw_address) {}
 
 std::string IpAddress::GetAddressString() const {
     std::ostringstream out;
@@ -30,6 +29,16 @@ std::string IpAddress::GetAddressString() const {
 
     return out.str();
 }
+
+uint32_t IpAddress::GetRawIPAddress() const {
+    return raw_ip;
+}
+
+std::ostream& operator<<(std::ostream& out, const IpAddress& addr) {
+    out << addr.GetAddressString();
+    return out;
+}
+
 
 // ================ EthernetFrame ================ 
 
@@ -197,30 +206,4 @@ void PacketHandler(u_char *args,
             std::cout << "ICMP segment" << std::endl;
         }
     }
-}
-
-void PrintHEX(const u_char *payload, int len) {
-    int i;
-    int gap;
-    const u_char *ch;
-
-    /* hex */
-    ch = payload;
-    for(i = 0; i < len; i++) {
-        if (i != 0 && i % 16 == 0) printf("\n");
-
-        printf("%02x ", *ch);
-        ch++;
-    }
-
-    /* fill hex gap with spaces if not full line */
-    if (len < 16) {
-        gap = 16 - len;
-        for (i = 0; i < gap; i++) {
-            printf("   ");
-        }
-    }
-    printf("   ");
-
-    printf("\n");
 }

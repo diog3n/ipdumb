@@ -16,5 +16,11 @@
   "command": "/usr/bin/c++  -I/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src -g -std=gnu++14 -o CMakeFiles/main.dir/src/tests.cpp.o -c /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/tests.cpp",
   "file": "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/tests.cpp",
   "output": "CMakeFiles/main.dir/src/tests.cpp.o"
+},
+{
+  "directory": "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build",
+  "command": "/usr/bin/c++  -I/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src -g -std=gnu++14 -o CMakeFiles/main.dir/src/sequence.cpp.o -c /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/sequence.cpp",
+  "file": "/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/sequence.cpp",
+  "output": "CMakeFiles/main.dir/src/sequence.cpp.o"
 }
 ]

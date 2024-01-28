@@ -1,4 +1,5 @@
 #include "network.h"
+#include "sequence.h"
 #include "tests.h"
 
 #include <linux/if_ether.h>
@@ -9,13 +10,6 @@
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 
-void print_packet_info(const u_char *packet, 
-                       struct pcap_pkthdr packet_header);
-
-void packet_handler(u_char *args, 
-                    const struct pcap_pkthdr *pkthdr,
-                    const u_char *packet);
-
 int main(int argc, char *argv[]) {
     TestIpAddress();
     TestHeaders();
@@ -25,7 +19,7 @@ int main(int argc, char *argv[]) {
     
     pcap_t *handle;
     const u_char *packet;
-    struct pcap_pkthdr packet_header;
+    struct pcap_pkthdr *packet_header;
     
     int packet_count_limit = 1;
     int timeout_limit = 10000; /* In milliseconds */
@@ -68,7 +62,23 @@ int main(int argc, char *argv[]) {
     }
 
     /* We use 0 as cnt, this means unlimited or until file ends. */
-    int loop_status = pcap_loop(handle, 0, PacketHandler, NULL); 
+    // int loop_status = pcap_loop(handle, 0, PacketHandler, NULL); 
+
+    Sequence sequence;
+
+    while (true) {
+        int read_status = pcap_next_ex(handle, &packet_header, &packet);
+
+        EthernetFrame frame(*packet_header, packet);
+
+        sequence.AddSequenceEntry(SequenceEntry{frame}, 
+                                  GetPacketSize(frame));
+
+        if (read_status == PCAP_ERROR_BREAK 
+         || read_status == 0) break;
+    }
+
+    sequence.PrintSequence(std::cout);
 
     pcap_close(handle);
 

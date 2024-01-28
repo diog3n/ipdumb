@@ -10,6 +10,8 @@ set(PROJECT_FILES ${SRC_DIR}/main.cpp
                   ${SRC_DIR}/network.cpp
                   ${SRC_DIR}/tests.h
                   ${SRC_DIR}/tests.cpp
+                  ${SRC_DIR}/sequence.h
+                  ${SRC_DIR}/sequence.cpp
     )
 
 add_executable(main ${PROJECT_FILES})

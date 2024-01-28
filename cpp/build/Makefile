@@ -177,6 +177,30 @@ src/network.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/network.cpp.s
 .PHONY : src/network.cpp.s
 
+src/sequence.o: src/sequence.cpp.o
+.PHONY : src/sequence.o
+
+# target to build an object file
+src/sequence.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/sequence.cpp.o
+.PHONY : src/sequence.cpp.o
+
+src/sequence.i: src/sequence.cpp.i
+.PHONY : src/sequence.i
+
+# target to preprocess a source file
+src/sequence.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/sequence.cpp.i
+.PHONY : src/sequence.cpp.i
+
+src/sequence.s: src/sequence.cpp.s
+.PHONY : src/sequence.s
+
+# target to generate assembly for a file
+src/sequence.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/sequence.cpp.s
+.PHONY : src/sequence.cpp.s
+
 src/tests.o: src/tests.cpp.o
 .PHONY : src/tests.o
 
@@ -216,6 +240,9 @@ help:
 	@echo "... src/network.o"
 	@echo "... src/network.i"
 	@echo "... src/network.s"
+	@echo "... src/sequence.o"
+	@echo "... src/sequence.i"
+	@echo "... src/sequence.s"
 	@echo "... src/tests.o"
 	@echo "... src/tests.i"
 	@echo "... src/tests.s"

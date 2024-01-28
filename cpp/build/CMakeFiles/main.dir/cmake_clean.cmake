@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/main.cpp.o.d"
   "CMakeFiles/main.dir/src/network.cpp.o"
   "CMakeFiles/main.dir/src/network.cpp.o.d"
+  "CMakeFiles/main.dir/src/sequence.cpp.o"
+  "CMakeFiles/main.dir/src/sequence.cpp.o.d"
   "CMakeFiles/main.dir/src/tests.cpp.o"
   "CMakeFiles/main.dir/src/tests.cpp.o.d"
   "main"

@@ -14,6 +14,11 @@
 #define IP_PROTOCOL_UDP  0x11
 #define IP_PROTOCOL_ICMP 0x01
 
+#define UDP_HEADER_SIZE  8
+
+/* Note: ICMP is technically a network-layer protocol, but since
+ * it is encapsulated by an IPv4 packet, it is treated here as a 
+ * transport layer protocol */ 
 enum class TransportProto {NONE, TCP, UDP, ICMP};
 
 /* this can be expanded in the future to include IPv6 and other
@@ -31,15 +36,22 @@ class ICMPSegment;
 
 struct IpAddress;
 
-struct IpAddress { 
+class IpAddress { 
+public:
+    IpAddress(uint32_t bin_address);
+    std::string GetAddressString() const;
+    uint32_t GetRawIPAddress() const;
+
+private:
     uint8_t oct1;
     uint8_t oct2;
     uint8_t oct3;
     uint8_t oct4;
 
-    IpAddress(uint32_t bin_address);
-    std::string GetAddressString() const;
+    uint32_t raw_ip;
 };
+
+std::ostream& operator<<(std::ostream& out, const IpAddress& addr);
 
 class Segment {
 public:
@@ -124,5 +136,3 @@ private:
 void PacketHandler(u_char *args, 
                    const struct pcap_pkthdr *pkthdr,
                    const u_char *packet);
-
-void PrintHEX(const u_char *payload, int len);
