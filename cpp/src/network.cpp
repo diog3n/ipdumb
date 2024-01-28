@@ -1,10 +1,6 @@
 #include "network.h"
-#include "tests.h"
-
 #include <cstdint>
 #include <sstream>
-
-#include <cassert>
 #include <ios>
 #include <linux/if_ether.h>
 #include <pcap.h>

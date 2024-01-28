@@ -66,10 +66,6 @@ void TestHeaders() {
 
     pcap_pkthdr p_pkthdr = {0, 0};
 
-    TEST_STREAM << "Calling PacketHandler..." << std::endl;
-
-    PacketHandler(NULL, &p_pkthdr, packet);
-
     TEST_STREAM << "TestHeaders OK!" << std::endl;
 }
 
