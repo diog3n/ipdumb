@@ -52,15 +52,15 @@ int main(int argc, char *argv[]) {
     device = devs->name;
 
     /* Open device for live capture */
-    handle = pcap_open_live(
+    /*handle = pcap_open_live(
             device,
             BUFSIZ,
             packet_count_limit,
             timeout_limit,
             error_buffer
-        );
-
-    //handle = pcap_open_offline("../capture.pcap", error_buffer);
+        );*/
+    
+    handle = pcap_open_offline("../capture.pcap", error_buffer);
 
     if (handle == NULL) {
         printf("Error: failed to get a handle. %s\n", error_buffer);
