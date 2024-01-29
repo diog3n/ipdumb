@@ -1,20 +1,13 @@
 #include "command_line.h"
 #include "network.h"
 #include "sequence.h"
-#include "tests.h"
 
 #include <cstdlib>
 #include <fstream>
-#include <ostream>
 #include <thread>
 #include <cstring>
 #include <pcap.h>
-#include <netinet/if_ether.h>
 #include <pcap/pcap.h>
-#include <net/ethernet.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
 
 #define EXIT_KEY 'q'
 
