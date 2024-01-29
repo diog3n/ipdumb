@@ -36,7 +36,6 @@ public:
                  + int32_hasher(entry.ip_source.GetRawIPAddress()) * 37
                  + int16_hasher(entry.tr_source) * 37 * 37
                  + int16_hasher(entry.tr_dest) * 37 * 37 * 37;
-                 + type_hasher(entry.tr_type) * 37 * 37 * 37 * 37;
         }
     };
 private:

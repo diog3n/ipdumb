@@ -73,16 +73,23 @@ void Sequence::AddSequenceEntry(const SequenceEntry& entry,
 }
 
 void Sequence::PrintSequence(std::ostream& out) const {
+    bool is_first = true;
+
     for (auto iter = entries.begin(); iter != entries.end(); iter++) {
         const auto& entry = iter->first;
         const auto& packet_stats = iter->second;
 
+        if (!is_first) {
+            out << std::endl;
+        }
+
+        is_first = false;
         out << entry.GetSourceIP()            << "," 
             << entry.GetDestIP()              << ","
             << entry.GetTransportSourcePort() << ","
             << entry.GetTransportDestPort()   << ","
             << packet_stats.packet_count      << ","
-            << packet_stats.bytes             << std::endl;
+            << packet_stats.bytes;
     }
 }
 
