@@ -5,9 +5,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-file(GLOB PCAP_HDR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h 
-                         ${CMAKE_CURRENT_SOURCE_DIR}/include/pcap/*.h)
-
 set(PROJECT_FILES ${SRC_DIR}/main.cpp
                   ${SRC_DIR}/network.h
                   ${SRC_DIR}/network.cpp
@@ -18,13 +15,8 @@ set(PROJECT_FILES ${SRC_DIR}/main.cpp
                   ${SRC_DIR}/command_line.h
     )
 
-set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-add_executable(ipdumb ${PROJECT_FILES} ${PCAP_HDR_FILES})
+add_executable(ipdumb ${PROJECT_FILES})
 
 target_include_directories(ipdumb PUBLIC ${SRC_DIR})
-target_include_directories(ipdumb PUBLIC ${INCLUDE_DIR})
 
-target_link_libraries(ipdumb ${CMAKE_CURRENT_SOURCE_DIR}/lib/pcap/libpcap.so)
-target_link_libraries(ipdumb ${CMAKE_CURRENT_SOURCE_DIR}/lib/pcap/libpcap.so.1)
-target_link_libraries(ipdumb ${CMAKE_CURRENT_SOURCE_DIR}/lib/pcap/libpcap.so.1.10.4)
+target_link_libraries(ipdumb pcap)
