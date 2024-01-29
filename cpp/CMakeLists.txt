@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(ipdump CXX)
+project(ipdumb CXX)
 set(CMAKE_CXX_STANDARD 14)
 
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -19,6 +19,6 @@ set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(ipdump ${PROJECT_FILES})
 
-target_link_libraries(ipdump -L./lib/pcap/libpcap.so)
-target_include_directories(ipdump PUBLIC ${SRC_DIR})
-target_include_directories(ipdump PUBLIC ${INCLUDE_DIR})
+target_link_libraries(ipdumb -L./lib/pcap/libpcap.so)
+target_include_directories(ipdumb PUBLIC ${SRC_DIR})
+target_include_directories(ipdumb PUBLIC ${INCLUDE_DIR})
