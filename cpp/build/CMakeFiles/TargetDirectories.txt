@@ -1,3 +1,0 @@
-/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles/ipdump.dir
-/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles/edit_cache.dir
-/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles/rebuild_cache.dir

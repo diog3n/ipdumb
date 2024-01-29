@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/ipdump.dir/src/main.cpp.o CMakeFiles/ipdump.dir/src/network.cpp.o CMakeFiles/ipdump.dir/src/tests.cpp.o CMakeFiles/ipdump.dir/src/sequence.cpp.o -o ipdump  -L./lib/pcap/libpcap.so 
