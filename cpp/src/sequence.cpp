@@ -1,23 +1,24 @@
 #include "sequence.h"
 #include "network.h"
+#include <iostream>
 #include <netinet/tcp.h>
 
 SequenceEntry::SequenceEntry(const EthernetFrame& frame)
-    : ip_source(((IPv4Packet * ) frame.GetPacket())->GetSourceIP())
-    , ip_dest(((IPv4Packet * ) frame.GetPacket())->GetDestIP()) {
+    : ip_source(frame.GetIPv4Packet()->GetSourceIP())
+    , ip_dest(frame.GetIPv4Packet()->GetDestIP()) {
 
-    const IPv4Packet *packet = (const IPv4Packet * ) frame.GetPacket();
+    const IPv4Packet *packet = frame.GetIPv4Packet();
 
     /* Since both udp and tcp headers have their source and destination
      * ports right in the beginning of the header, we don't care to which
      * exactly transport protocol is lying underneath, so we cast it to a
      * struct tcphdr type arbitrarily. */
-    const tcphdr *tcp_segment = (const tcphdr * ) packet->GetSegment();
+    const TCPSegment *tcp_segment = (const TCPSegment * ) 
+                                     packet->GetSegment();
 
-    tr_source = tcp_segment->th_sport;
-    tr_dest = tcp_segment->th_dport;
-
-    tr_type = packet->GetSegment()->type;
+    tr_source = tcp_segment->GetSourcePort();
+    tr_dest = tcp_segment->GetDestPort();
+    tr_type = packet->GetTransportProtoType();
 }
 
 const IpAddress& SequenceEntry::GetSourceIP() const {
@@ -28,7 +29,7 @@ const IpAddress& SequenceEntry::GetDestIP() const {
     return ip_dest;
 }
 
-const TransportProto SequenceEntry::GetTransportType() const {
+const uint8_t SequenceEntry::GetTransportType() const {
     return tr_type;
 }
 
@@ -48,21 +49,41 @@ bool SequenceEntry::operator==(const SequenceEntry& other) const {
         && tr_dest   == other.tr_dest;
 }
 
+std::ostream& operator<<(std::ostream& out, const SequenceEntry& entry) {
+    out << entry.GetSourceIP()            << ", " 
+        << entry.GetDestIP()              << ", "
+        << (entry.GetTransportType() == IP_PROTOCOL_TCP 
+                 ? "TCP"
+                 : entry.GetTransportType() == IP_PROTOCOL_UDP 
+                        ? "UDP"
+                        : "UKNOWN")       << ", "
+        << entry.GetTransportSourcePort() << ", "
+        << entry.GetTransportDestPort();
+
+    return out;
+}
+
 void Sequence::AddSequenceEntry(const SequenceEntry& entry, 
                                 const uint16_t bytes) {
-    entries[entry] += bytes;   
+    if (entry.GetTransportType() != IP_PROTOCOL_TCP
+     && entry.GetTransportType() != IP_PROTOCOL_UDP) return;
+
+
+    entries[entry].bytes += bytes;
+    entries[entry].packet_count++;   
 }
 
 void Sequence::PrintSequence(std::ostream& out) const {
     for (auto iter = entries.begin(); iter != entries.end(); iter++) {
         const auto& entry = iter->first;
-        const auto& bytes = iter->second;
+        const auto& packet_stats = iter->second;
 
         out << entry.GetSourceIP()            << "," 
             << entry.GetDestIP()              << ","
             << entry.GetTransportSourcePort() << ","
             << entry.GetTransportDestPort()   << ","
-            << bytes << std::endl;
+            << packet_stats.packet_count      << ","
+            << packet_stats.bytes             << std::endl;
     }
 }
 
@@ -71,19 +92,19 @@ uint16_t GetPacketSize(const EthernetFrame& frame) {
 
     const iphdr raw_iphdr = packet->GetRawHeader();
 
-    const uint16_t ip_payload_size = ntohs(raw_iphdr.tot_len) 
+    uint16_t ip_payload_size = ntohs(raw_iphdr.tot_len) 
                                    - raw_iphdr.ihl * 4;
-    
+
     if (ip_payload_size == 0) return 0;
 
     if (packet->GetTransportProtoType() == IP_PROTOCOL_TCP) {
-        const TCPSegment *segment = (TCPSegment * ) packet;
+        const TCPSegment *segment = (TCPSegment * ) packet->GetSegment();
 
-        return ip_payload_size - segment->GetRawHeader().th_off * 4;
+        ip_payload_size -= segment->GetRawHeader().th_off * 4;
     } else if (packet->GetTransportProtoType() == IP_PROTOCOL_UDP) {
-        const UDPSegment *segment = (UDPSegment * ) packet;
+        const UDPSegment *segment = (UDPSegment * ) packet->GetSegment();
 
-        return ip_payload_size - UDP_HEADER_SIZE;
+        ip_payload_size -= UDP_HEADER_SIZE;
     }
 
     return ip_payload_size;

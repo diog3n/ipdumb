@@ -62,6 +62,10 @@ const Packet *EthernetFrame::GetPacket() const {
     return packet_ptr.get();
 }
 
+const IPv4Packet *EthernetFrame::GetIPv4Packet() const {
+    return (IPv4Packet * ) packet_ptr.get();
+}
+
 const uint16_t EthernetFrame::GetNetworkProtocolType() const {
     return ntohs(raw_header.h_proto);
 } 

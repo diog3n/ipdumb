@@ -77,6 +77,7 @@ public:
 
     const ethhdr& GetRawHeader() const;
     const Packet *GetPacket() const;
+    const IPv4Packet *GetIPv4Packet() const;
     const uint16_t GetNetworkProtocolType() const; 
 private:
     ethhdr raw_header;

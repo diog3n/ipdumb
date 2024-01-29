@@ -14,7 +14,7 @@ public:
 
     const IpAddress& GetDestIP() const;
 
-    const TransportProto GetTransportType() const;
+    const uint8_t GetTransportType() const;
 
     const uint16_t GetTransportSourcePort() const;
     
@@ -26,23 +26,26 @@ public:
         size_t operator()(const SequenceEntry& entry) const {
             std::hash<uint32_t> int32_hasher;
             std::hash<uint16_t> int16_hasher;
-            std::hash<TransportProto> type_hasher;
+            std::hash<uint8_t> type_hasher;
 
             return int32_hasher(entry.ip_source.GetRawIPAddress())
                  + int32_hasher(entry.ip_source.GetRawIPAddress()) * 37
                  + int16_hasher(entry.tr_source) * 37 * 37
                  + int16_hasher(entry.tr_dest) * 37 * 37 * 37;
+                 + type_hasher(entry.tr_type) * 37 * 37 * 37 * 37;
         }
     };
 private:
     IpAddress ip_source;
     IpAddress ip_dest;
 
-    TransportProto tr_type;
+    uint8_t tr_type;
 
     uint16_t tr_source;
     uint16_t tr_dest;
 };
+
+std::ostream& operator<<(std::ostream& out, const SequenceEntry& entry);
 
 /* Sequence is a set of packets with the same source and destination 
  * IP addresses and same source and destination TCP/UDP ports */
@@ -53,8 +56,17 @@ public:
 
     void PrintSequence(std::ostream& out) const;
 private:
-    std::unordered_map<SequenceEntry, uint32_t,
+    struct PacketStats {
+        uint32_t bytes = 0;
+        uint32_t packet_count = 0;
+    };
+
+    /* Maps SequenceEntry to a pair of <bytes, packet count> */
+    std::unordered_map<SequenceEntry, PacketStats,
                        SequenceEntry::SequenceEntryHasher> entries;
 };
 
+/* This function returns data payload size, not the size of the whole 
+ * frame. 
+ * Note: Everything past tranport layer is considered data payload */
 uint16_t GetPacketSize(const EthernetFrame& frame);
