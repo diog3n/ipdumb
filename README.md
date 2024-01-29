@@ -1,5 +1,5 @@
 # ipdumb
-Is a simple TCP/UDP traffic analyzer.
+Is a simple .pcap analyzer.
 
 ## Usage:
 
@@ -24,3 +24,11 @@ sudo dnf install libpcap-devel
 mkdir build && cd build
 cmake .. && cmake --build .
 ``` 
+
+# capstat
+Is a simple IP stat processor.
+
+It takes ipdumb output .csv file and transforms it into its own .csv table with data about every ip adress and amount of packets and bytes sent and received.
+
+## Dependencies
+Python 3.9+
