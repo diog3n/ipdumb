@@ -72,8 +72,15 @@ void Sequence::AddSequenceEntry(const SequenceEntry& entry,
     entries[entry].packet_count++;   
 }
 
+void Sequence::PrintHeader(std::ostream& out) const {
+    out << "source_ip," "dest_ip," "source_port,"
+           "dest_port," "packet_count," "bytes\n"; 
+}
+
 void Sequence::PrintSequence(std::ostream& out) const {
     bool is_first = true;
+
+    PrintHeader(out);
 
     for (auto iter = entries.begin(); iter != entries.end(); iter++) {
         const auto& entry = iter->first;

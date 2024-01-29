@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[]) {
     /* If user didn't supply enough arguments, print usage. */
-    if (argc < 4) {
+    if (argc < 3 || argc > 4) {
         PrintUsage();
         return 1;
     }
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     };
 
     std::cout << "Type " << EXIT_KEY 
-              << " in to stop cature and dump info into a file." 
+              << " in to stop cature and dump info." 
               << std::endl;
 
     /* Running a thread alongside main thread to read keypresses. */
@@ -125,16 +125,25 @@ int main(int argc, char *argv[]) {
 
     }
     
-    if (!exiting) std::cout << "Press any key to exit..." << std::endl;
+    if (!exiting) std::cout << "Press any key to dump info and exit..." 
+                            << std::endl;
         
     /* Wait for key_reader function to finish. */
     key_thread.join();
-
-    /* Dump sequence into the given file. */
-    std::ofstream file_out(argv[3], std::ios::out);
-    sequence.PrintSequence(file_out);
-
     pcap_close(handle);
+
+    if (argc == 4) {
+        /* Dump sequence into the given file. */
+        std::ofstream file_out(argv[3], std::ios::out);
+        sequence.PrintSequence(file_out);
+        std::cout << "Dumped!" << std::endl;
+
+        return 0;
+    }
+
+    std::cout << "Info dump: " << std::endl;
+    sequence.PrintSequence(std::cout);
+    std::cout << std::endl;
 
     return 0;
 }

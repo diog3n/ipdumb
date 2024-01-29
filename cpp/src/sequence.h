@@ -59,6 +59,8 @@ public:
 
     void PrintSequence(std::ostream& out) const;
 private:
+
+    void PrintHeader(std::ostream& out) const;
     struct PacketStats {
         uint32_t bytes = 0;
         uint32_t packet_count = 0;
