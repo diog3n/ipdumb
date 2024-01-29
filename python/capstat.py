@@ -83,8 +83,10 @@ def print_ip_data_table(ip_data_table: dict[str, IPData], file=None):
 def print_usage():
     print("Usage:\n"
           + "    python3 capstat.py [input_file.csv] [output_file.csv]\n"
+          + "    to dump info into a file.\n"
           + "or\n"
-          + "    python3 capstat.py [input_file.csv]")
+          + "    python3 capstat.py [input_file.csv]\n"
+          + "    to dump info into the terminal.")
 
 
 if len(sys.argv) < 2 or len(sys.argv) > 3:
