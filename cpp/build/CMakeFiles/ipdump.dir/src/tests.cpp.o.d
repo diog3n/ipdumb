@@ -1,4 +1,4 @@
-CMakeFiles/main.dir/src/tests.cpp.o: \
+CMakeFiles/ipdump.dir/src/tests.cpp.o: \
  /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/tests.cpp \
  /usr/include/stdc-predef.h \
  /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/src/tests.h \

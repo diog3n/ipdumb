@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(pcap_test CXX)
+project(ipdump CXX)
 set(CMAKE_CXX_STANDARD 14)
 
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -12,9 +12,13 @@ set(PROJECT_FILES ${SRC_DIR}/main.cpp
                   ${SRC_DIR}/tests.cpp
                   ${SRC_DIR}/sequence.h
                   ${SRC_DIR}/sequence.cpp
+                  ${SRC_DIR}/command_line.h
     )
 
-add_executable(main ${PROJECT_FILES})
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(main pcap)
-target_include_directories(main PUBLIC ${SRC_DIR})
+add_executable(ipdump ${PROJECT_FILES})
+
+target_link_libraries(ipdump -L./lib/pcap/libpcap.so)
+target_include_directories(ipdump PUBLIC ${SRC_DIR})
+target_include_directories(ipdump PUBLIC ${INCLUDE_DIR})

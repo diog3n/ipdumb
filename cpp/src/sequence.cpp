@@ -12,7 +12,7 @@ SequenceEntry::SequenceEntry(const EthernetFrame& frame)
     /* Since both udp and tcp headers have their source and destination
      * ports right in the beginning of the header, we don't care to which
      * exactly transport protocol is lying underneath, so we cast it to a
-     * struct tcphdr type arbitrarily. */
+     * TCPSegment type arbitrarily. */
     const TCPSegment *tcp_segment = (const TCPSegment * ) 
                                      packet->GetSegment();
 
@@ -68,7 +68,6 @@ void Sequence::AddSequenceEntry(const SequenceEntry& entry,
     if (entry.GetTransportType() != IP_PROTOCOL_TCP
      && entry.GetTransportType() != IP_PROTOCOL_UDP) return;
 
-
     entries[entry].bytes += bytes;
     entries[entry].packet_count++;   
 }
@@ -88,7 +87,7 @@ void Sequence::PrintSequence(std::ostream& out) const {
 }
 
 uint16_t GetPacketSize(const EthernetFrame& frame) {
-    const IPv4Packet *packet = (IPv4Packet * ) frame.GetPacket();
+    const IPv4Packet *packet = frame.GetIPv4Packet();
 
     const iphdr raw_iphdr = packet->GetRawHeader();
 

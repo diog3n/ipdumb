@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/bui
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/main.dir/all
+all: CMakeFiles/ipdump.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/main.dir/clean
+clean: CMakeFiles/ipdump.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/main.dir
+# Target rules for target CMakeFiles/ipdump.dir
 
 # All Build rule for target.
-CMakeFiles/main.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target main"
-.PHONY : CMakeFiles/main.dir/all
+CMakeFiles/ipdump.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ipdump.dir/build.make CMakeFiles/ipdump.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ipdump.dir/build.make CMakeFiles/ipdump.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target ipdump"
+.PHONY : CMakeFiles/ipdump.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/main.dir/rule: cmake_check_build_system
+CMakeFiles/ipdump.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles 5
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/ipdump.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ilya/Documents/Work/infotecs/infotecs-test-task/cpp/build/CMakeFiles 0
-.PHONY : CMakeFiles/main.dir/rule
+.PHONY : CMakeFiles/ipdump.dir/rule
 
 # Convenience name for target.
-main: CMakeFiles/main.dir/rule
-.PHONY : main
+ipdump: CMakeFiles/ipdump.dir/rule
+.PHONY : ipdump
 
 # clean rule for target.
-CMakeFiles/main.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
-.PHONY : CMakeFiles/main.dir/clean
+CMakeFiles/ipdump.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ipdump.dir/build.make CMakeFiles/ipdump.dir/clean
+.PHONY : CMakeFiles/ipdump.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

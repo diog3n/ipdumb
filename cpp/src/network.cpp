@@ -12,6 +12,8 @@
 #include <netinet/udp.h>
 #include <iostream>
 
+/* There probably is a better way to do this but haven't come up 
+ * with something better yet */
 IpAddress::IpAddress(uint32_t raw_address):
     oct1{static_cast<uint8_t>((raw_address & (255 << 24)) >> 24)},
     oct2{static_cast<uint8_t>((raw_address & (255 << 16)) >> 16)},
@@ -47,7 +49,8 @@ EthernetFrame::EthernetFrame(const pcap_pkthdr& packet_header,
     : raw_header(*((ethhdr * ) bytes))
     , frame(bytes, bytes + packet_header.caplen) {
     
-    u_char *packet_start = frame.data() + sizeof(ethhdr);
+    /* Move pointer to the start of the packet */
+    const u_char *packet_start = frame.data() + sizeof(ethhdr);
 
     if (ntohs(raw_header.h_proto) == ETHERTYPE_IP) {
         packet_ptr = std::make_unique<IPv4Packet>(packet_start);
@@ -73,13 +76,13 @@ const uint16_t EthernetFrame::GetNetworkProtocolType() const {
 
 // ================ IPv4Packet ================
 
-IPv4Packet::IPv4Packet(u_char *packet_start)
-        : Packet(NetworkProto::IPV4)
-        , raw_header(*(iphdr * ) packet_start)
+IPv4Packet::IPv4Packet(const u_char *packet_start)
+        : raw_header(*(iphdr * ) packet_start)
         , source_ip(ntohl(raw_header.saddr))
         , dest_ip(ntohl(raw_header.daddr)) {
-
-    u_char *segment_start = packet_start + raw_header.ihl * 4;
+            
+    /* Move pointer to the start of the segment */            
+    const u_char *segment_start = packet_start + raw_header.ihl * 4;
     
     switch (raw_header.protocol) {
         case IP_PROTOCOL_TCP:
@@ -119,9 +122,8 @@ const IpAddress& IPv4Packet::GetDestIP() const {
 
 // ================ TCPSegment ================
 
-TCPSegment::TCPSegment(u_char *segment_start)
-    : Segment(TransportProto::TCP)
-    , raw_header(*((tcphdr * ) segment_start)) {}
+TCPSegment::TCPSegment(const u_char *segment_start)
+    : raw_header(*((tcphdr * ) segment_start)) {}
 
 const tcphdr& TCPSegment::GetRawHeader() const {
     return raw_header;
@@ -137,9 +139,8 @@ const uint16_t TCPSegment::GetDestPort() const {
 
 // ================ UDPSegment ================
 
-UDPSegment::UDPSegment(u_char *segment_start)
-    : Segment(TransportProto::UDP)
-    , raw_header(*((udphdr * ) segment_start)) {}
+UDPSegment::UDPSegment(const u_char *segment_start)
+    : raw_header(*((udphdr * ) segment_start)) {}
 
 const udphdr& UDPSegment::GetRawHeader() const {
     return raw_header;
@@ -155,59 +156,9 @@ const uint16_t UDPSegment::GetDestPort() const {
 
 // =============== ICMPSegment ================
 
-ICMPSegment::ICMPSegment(u_char *segment_start)
-    : Segment(TransportProto::ICMP)
-    , raw_header(*((icmphdr * ) segment_start)) {}
+ICMPSegment::ICMPSegment(const u_char *segment_start)
+    : raw_header(*((icmphdr * ) segment_start)) {}
 
 const icmphdr& ICMPSegment::GetRawHeader() const {
     return raw_header;
-}
-
-// ============================================
-
-void PacketHandler(u_char *args, 
-                   const struct pcap_pkthdr *pkthdr, 
-                   const u_char *packet) {
-    const EthernetFrame eth_frame(*pkthdr, packet);
-
-    if (eth_frame.GetNetworkProtocolType() != ETHERTYPE_IP) {
-        return;
-    }
-
-    const IPv4Packet *ipv4_packet = (const IPv4Packet * ) 
-                                    eth_frame.GetPacket();
-    
-    std::cout << "IPv4 packet, source address is " 
-              << ipv4_packet->GetSourceIP().GetAddressString()
-              << " and destination address is "
-              << ipv4_packet->GetDestIP().GetAddressString()
-              << std::endl; 
-
-    switch (ipv4_packet->GetTransportProtoType()) { 
-        case IP_PROTOCOL_TCP: {
-            const TCPSegment *segment = (const TCPSegment * )
-                                        ipv4_packet->GetSegment();
-
-            std::cout << "TCP segment, source port is "
-                      << segment->GetSourcePort()
-                      << " and destination port is "
-                      << segment->GetDestPort() 
-                      << std::endl;
-            break;
-        }
-        case IP_PROTOCOL_UDP: {
-            const UDPSegment *segment = (const UDPSegment * )
-                                        ipv4_packet->GetSegment();
-
-            std::cout << "UDP segment, source port is "
-                      << segment->GetSourcePort()
-                      << " and destination port is "
-                      << segment->GetDestPort() 
-                      << std::endl;
-            break;
-        }
-        case IP_PROTOCOL_ICMP: {
-            std::cout << "ICMP segment" << std::endl;
-        }
-    }
 }

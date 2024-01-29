@@ -6,6 +6,8 @@
 #include <ostream>
 #include <unordered_map>
 
+/* SequenceEntry is a line that contains src/dst ip, transport type, 
+ * and src/dst ports */
 class SequenceEntry {
 public:
     SequenceEntry(const EthernetFrame& frame);
@@ -22,6 +24,8 @@ public:
 
     bool operator==(const SequenceEntry& other) const;
 
+    /* Hasher turns SequenceEntry into a unique number. This will allow 
+     * us to quickly unite multiple entries under one sequence. */
     struct SequenceEntryHasher {
         size_t operator()(const SequenceEntry& entry) const {
             std::hash<uint32_t> int32_hasher;
@@ -67,6 +71,8 @@ private:
 };
 
 /* This function returns data payload size, not the size of the whole 
- * frame. 
+ * frame. That's the reason why some packets may have size == 0 or why
+ * some sequences will have surprisingly low amounts of transferred data.
+ *
  * Note: Everything past tranport layer is considered data payload */
 uint16_t GetPacketSize(const EthernetFrame& frame);

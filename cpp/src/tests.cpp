@@ -63,7 +63,7 @@ void TestHeaders() {
                     .GetAddressString() == "192.168.31.100");
     assert(ipv4_pack->GetDestIP()
                     .GetAddressString() == "34.107.243.93");
-    assert(ipv4_pack->GetSegment()->type == TransportProto::TCP);
+    assert(ipv4_pack->GetTransportProtoType() == IP_PROTOCOL_TCP);
 
     const TCPSegment *tcp_segment = (const TCPSegment * ) 
                                     (ipv4_pack->GetSegment());
