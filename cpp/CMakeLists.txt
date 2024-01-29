@@ -25,4 +25,6 @@ add_executable(ipdumb ${PROJECT_FILES} ${PCAP_HDR_FILES})
 target_include_directories(ipdumb PUBLIC ${SRC_DIR})
 target_include_directories(ipdumb PUBLIC ${INCLUDE_DIR})
 
-target_link_libraries(ipdumb -L./lib/pcap/ libpcap.so)
+target_link_libraries(ipdumb ${CMAKE_CURRENT_SOURCE_DIR}/lib/pcap/libpcap.so)
+target_link_libraries(ipdumb ${CMAKE_CURRENT_SOURCE_DIR}/lib/pcap/libpcap.so.1)
+target_link_libraries(ipdumb ${CMAKE_CURRENT_SOURCE_DIR}/lib/pcap/libpcap.so.1.10.4)
